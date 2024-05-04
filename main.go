@@ -1,43 +1,19 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
+	"cats_social/postgres"
+	"cats_social/routers"
 
-	_ "github.com/lib/pq"
+	"github.com/gin-gonic/gin"
 )
 
-const (
-	host = "localhost"
-	port = 5432
-	user = "postgres"
-	password = ""
-	dbname = "cats_social"
-)
-
-var (
-	db *sql.DB
-	err error
-)
 
 func main(){
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+ 	router := gin.Default()
+ 	routers.SetupUserRoutes(router)
+ 	router.Run(":8080")
 
-	db, err = sql.Open("postgres", psqlInfo)
-	if err != nil {
-		panic(err)
-	}
-
-	defer db.Close()
-
-	err = db.Ping()
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Successfully connected!")
-
+	defer postgres.DB.Close()
 }
 
 // type User struct {
